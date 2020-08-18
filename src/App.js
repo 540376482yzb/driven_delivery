@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import useHook from "./components/useHook";
 import Triangle from "./components/Triangle";
@@ -22,31 +21,18 @@ function App() {
   return (
     <div className="App">
       <h4>checkered board</h4>
-      <Board
-        size={size}
-        shape={shape}
-        colorScheme={colorScheme}
-        position={position}
-      />
+      <Board position={position} />
       <Footer setShape={setShape} setColorScheme={setColorScheme} />
     </div>
   );
 }
 
-function Board({ size, shape, colorScheme }) {
-  const squares = generateSquare(size);
-  return squares.map((row, rIndex) => {
+function Board({ position }) {
+  return position.map((row, rIndex) => {
     return (
       <div style={styles.row}>
         {row.map((col, cIndex) => (
-          <Box
-            topTwo={rIndex <= 1}
-            bottomTwo={rIndex >= squares.length - 2}
-            cIndex={cIndex % 2}
-            rIndex={rIndex % 2}
-            shape={shape}
-            colorScheme={colorScheme}
-          />
+          <Box cIndex={cIndex % 2} rIndex={rIndex % 2} property={col} />
         ))}
       </div>
     );
@@ -125,52 +111,33 @@ function InputPrompt({ onPrompt }) {
   );
 }
 
-function Box({ cIndex, rIndex, topTwo, bottomTwo, shape, colorScheme }) {
+function Box({ cIndex, rIndex, property }) {
   const oddStyle =
     (rIndex && !cIndex) || (!rIndex && cIndex) ? { background: "white" } : {};
-
-  return (
-    <div style={{ ...styles.box, ...oddStyle }}>
-      {(topTwo || bottomTwo) && (
-        <Piece
-          shape={shape}
-          colorScheme={colorScheme}
-          topTwo={topTwo}
-          bottomTwo={bottomTwo}
-        />
-      )}
-    </div>
-  );
+  if (property !== 1) {
+    return (
+      <div style={{ ...styles.box, ...oddStyle }}>
+        <Piece {...property} />
+      </div>
+    );
+  }
+  return <div style={{ ...styles.box, ...oddStyle }}></div>;
 }
 
-function Piece({ shape = "circle", colorScheme, topTwo, bottomTwo }) {
-  let topColor = "";
-  let bottomColor = "";
-
-  switch (colorScheme) {
-    case "green_yellow":
-      topColor = "green";
-      bottomColor = "yellow";
-      break;
-    case "red_black":
-    default:
-      topColor = "red";
-      bottomColor = "black";
-      break;
-  }
-
-  const topTwoStyle = topTwo ? { background: topColor } : {};
-  const bottomTwoStyle = bottomTwo ? { background: bottomColor } : {};
-  const pieceProps = { ...topTwoStyle, ...bottomTwoStyle };
-
+function Piece({ shape, color, side }) {
+  console.log(shape);
   switch (shape) {
     case "triangle":
-      return <Triangle {...pieceProps} />;
+      return <Triangle background={color} />;
     case "circle":
     default:
       return (
         <div
-          style={{ borderRadius: "100%", ...styles.circlePiece, ...pieceProps }}
+          style={{
+            borderRadius: "100%",
+            ...styles.circlePiece,
+            background: color,
+          }}
         />
       );
   }
