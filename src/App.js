@@ -1,23 +1,33 @@
 import React, { useState, useRef } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import useHook from "./components/useHook";
 import Triangle from "./components/Triangle";
 
 function App() {
-  const [size, setSize] = useState(0);
-  const [shape, setShape] = useState("circle");
-  const [colorScheme, setColorScheme] = useState("red_black");
-
-  console.log("==== change color", colorScheme);
+  const {
+    size,
+    shape,
+    setShape,
+    colorScheme,
+    setColorScheme,
+    position,
+    init,
+  } = useHook();
 
   if (size === 0) {
-    return <InputPrompt onPrompt={setSize} />;
+    return <InputPrompt onPrompt={init} />;
   }
 
   return (
     <div className="App">
       <h4>checkered board</h4>
-      <Board size={size} shape={shape} colorScheme={colorScheme} />
+      <Board
+        size={size}
+        shape={shape}
+        colorScheme={colorScheme}
+        position={position}
+      />
       <Footer setShape={setShape} setColorScheme={setColorScheme} />
     </div>
   );
