@@ -14,6 +14,8 @@ function App() {
     setActiveTarget,
     activeTarget,
     move,
+    saveGame,
+    clearGame,
   } = useHook();
 
   if (size === 0) {
@@ -35,6 +37,10 @@ function App() {
         turn={turn}
         move={move}
       />
+      <div>
+        <button onClick={saveGame}>save game</button>
+        <button onClick={clearGame}>reset game</button>
+      </div>
     </div>
   );
 }

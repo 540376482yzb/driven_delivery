@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:5001/drivendelivery-8e607/us-central1/app",
+});
+
+const defaultState = {
+  size: 0,
+  shape: "circle",
+  colorScheme: "red_black",
+  position: [],
+  turn: "top",
+};
 
 export default function useHook() {
-  const [size, setSize] = useState(0);
-  const [shape, setShape] = useState("circle");
-  const [colorScheme, setColorScheme] = useState("red_black");
-  const [position, setPosition] = useState([]);
-  const [turn, setTurn] = useState("top");
+  const [size, setSize] = useState(defaultState.size);
+  const [shape, setShape] = useState(defaultState.shape);
+  const [colorScheme, setColorScheme] = useState(defaultState.colorScheme);
+  const [position, setPosition] = useState(defaultState.position);
+  const [turn, setTurn] = useState(defaultState.turn);
   const [activeTarget, setActiveTarget] = useState([]);
 
   const init = (n) => {
@@ -88,9 +101,6 @@ export default function useHook() {
         }
       });
     });
-    console.log("position =============");
-    console.log("position", position);
-    console.log("next valid move", flag ? nextPos : []);
     return flag ? nextPos : [];
   };
 
@@ -112,11 +122,49 @@ export default function useHook() {
     setPosition(out);
   };
 
+  const loadGame = () => {
+    api
+      .get("/state")
+      .then(({ data }) => {
+        if (data) {
+          setSize(data.size);
+          setShape(data.shape);
+          setColorScheme(data.colorScheme);
+          data.position && setPosition(data.position);
+          setTurn(data.turn);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const saveGame = () => {
+    api.post("/save", {
+      size,
+      shape,
+      turn,
+      colorScheme,
+      position,
+    });
+  };
+
+  const clearGame = async () => {
+    await api.post("/clear");
+    setSize(defaultState.size);
+    setShape(defaultState.shape);
+    setColorScheme(defaultState.colorScheme);
+    setPosition(defaultState.position);
+    setTurn(defaultState.turn);
+  };
+
   useEffect(() => {
     changeBoardSetting({ shape, colorScheme });
   }, [shape, colorScheme]);
 
-  //   console.log(activeTarget);
+  useEffect(() => {
+    loadGame();
+  }, []);
 
   return {
     size,
@@ -132,6 +180,8 @@ export default function useHook() {
     activeTarget,
     setActiveTarget,
     move,
+    saveGame,
+    clearGame,
   };
 }
 
