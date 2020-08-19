@@ -2,8 +2,10 @@ var express = require("express");
 var router = express.Router();
 var admin = require("firebase-admin");
 
+var serviceAccount = require("../key.json");
+
 admin.initializeApp({
-  credential: admin.credential.cert("./key.json"),
+  credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://drivendelivery-8e607.firebaseio.com",
 });
 

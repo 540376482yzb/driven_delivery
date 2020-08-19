@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5001/drivendelivery-8e607/us-central1/app",
+  baseURL: "https://us-central1-drivendelivery-8e607.cloudfunctions.net/app",
 });
 
 const defaultState = {

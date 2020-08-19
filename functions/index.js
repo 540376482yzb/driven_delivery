@@ -2,7 +2,7 @@ const functions = require("firebase-functions");
 var createError = require("http-errors");
 var express = require("express");
 var cookieParser = require("cookie-parser");
-const appRouter = require("./appRouter");
+const appRouter = require("./routes/appRouter");
 
 var cors = require("cors");
 
